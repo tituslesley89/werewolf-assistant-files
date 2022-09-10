@@ -2,59 +2,103 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
+      color="grey darken-3"
       dark
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+      <h3>Werewolf Assistant</h3>
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+
     </v-app-bar>
 
+    <v-navigation-drawer
+      absolute
+      bottom
+      temporary
+    >
+
+    <v-list
+        nav
+        dense
+      >
+        <v-list-item-group
+          active-class="deep-red--text text--accent-4"
+        >
+        <v-list-item>
+            <v-list-item-title>Foo</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+    </v-list>
+    </v-navigation-drawer>
+
     <v-main>
-      <HelloWorld/>
+      <player-list :players="players" 
+      @changeLifeStatus="changeLifeStatus"
+      @deletePlayer="deletePlayer"/>
+    <add-player-dialog ref="addPlayerDialog" @add-player="addPlayer"/>
+    <confirmation-dialog ref="clearSessionConfirmationDialog" dialogText="Are you sure you want to reset the session?" @confirm="resetSession"/>
+    <footer-box :playerList="players" @addPlayer="openPlayerDialog" @clearSession="showClearSessionConfirmationDialog"/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import PlayerList from './components/PlayerList';
+import AddPlayerDialog from './components/AddPlayerDialog';
+import PlayerStatus from './constants/PlayerStatus';
+import FooterBox from './components/FooterBox.vue';
+import ConfirmationDialog from './components/ConfirmationDialog.vue';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    PlayerList,
+    AddPlayerDialog,
+    FooterBox,
+    ConfirmationDialog
   },
 
   data: () => ({
-    //
+    drawer : false,
+    players : []
   }),
-};
+  methods : {
+    openPlayerDialog() {
+      this.$refs.addPlayerDialog.openDialog();
+    },
+    addPlayer(player) {
+      this.players.push(
+        {
+          id : player.id,
+          name : player.name,
+          role : player.role,
+          status : PlayerStatus.ALIVE
+        }
+      );
+    },
+    changeLifeStatus(id) {
+      let elementPos = this.findPlayerIndexById(id);
+      let newStatus = this.players[elementPos].status === PlayerStatus.ALIVE ? PlayerStatus.DEAD : PlayerStatus.ALIVE;
+      this.$set(this.players[elementPos], 'status', newStatus);
+    },
+    deletePlayer(id) {
+      let elementPos = this.findPlayerIndexById(id);
+      this.$delete(this.players, elementPos);
+    },
+    findPlayerIndexById(id) {
+      return this.players.map((x)=>{return x.id; }).indexOf(id);
+    },
+    showClearSessionConfirmationDialog() {
+      if(this.players.length) {
+        this.$refs.clearSessionConfirmationDialog.showDialog();
+      }
+    },
+    resetSession() {
+      this.players = [];
+    }
+  }
+}
 </script>
