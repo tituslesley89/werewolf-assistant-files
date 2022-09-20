@@ -6,6 +6,7 @@
       dark
     >
 
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <h3>Werewolf Assistant</h3>
 
       <v-spacer></v-spacer>
@@ -14,6 +15,7 @@
     </v-app-bar>
 
     <v-navigation-drawer
+      v-model="drawer"
       absolute
       bottom
       temporary
@@ -26,8 +28,11 @@
         <v-list-item-group
           active-class="deep-red--text text--accent-4"
         >
-        <v-list-item>
-            <v-list-item-title>Foo</v-list-item-title>
+        <v-list-item @click="showOpenSessionDialog">
+            <v-list-item-title>Session Manager</v-list-item-title>
+          </v-list-item>
+        <v-list-item @click="showSaveSessionDialog">
+            <v-list-item-title>Save Session</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
     </v-list>
@@ -36,9 +41,13 @@
     <v-main>
       <player-list :players="players" 
       @changeLifeStatus="changeLifeStatus"
-      @deletePlayer="deletePlayer"/>
-    <add-player-dialog ref="addPlayerDialog" @add-player="addPlayer"/>
+      @editPlayer="showEditPlayerDialog"
+      @deletePlayer="confirmPlayerDeletion"/>
+    <add-player-dialog ref="addPlayerDialog" @add-player="addPlayer" @update-player="updatePlayer"/>
     <confirmation-dialog ref="clearSessionConfirmationDialog" dialogText="Are you sure you want to reset the session?" @confirm="resetSession"/>
+    <confirmation-dialog ref="deletePlayerConfirmation" dialogText="Are you sure you want to delete this player?" @confirm="deletePlayer"/>
+    <save-session ref="saveSessionDialog" :players="players"/>
+    <open-session ref="openSessionDialog" @openSession="openSession"/>
     <footer-box :playerList="players" @addPlayer="openPlayerDialog" @clearSession="showClearSessionConfirmationDialog"/>
     </v-main>
   </v-app>
@@ -50,6 +59,8 @@ import AddPlayerDialog from './components/AddPlayerDialog';
 import PlayerStatus from './constants/PlayerStatus';
 import FooterBox from './components/FooterBox.vue';
 import ConfirmationDialog from './components/ConfirmationDialog.vue';
+import SaveSession from './components/SaveSession.vue'
+import OpenSession from './components/OpenSession.vue';
 
 export default {
   name: 'App',
@@ -58,12 +69,15 @@ export default {
     PlayerList,
     AddPlayerDialog,
     FooterBox,
-    ConfirmationDialog
+    ConfirmationDialog,
+    OpenSession,
+    SaveSession
   },
 
   data: () => ({
     drawer : false,
-    players : []
+    players : [],
+    playerToDelete : undefined
   }),
   methods : {
     openPlayerDialog() {
@@ -71,12 +85,7 @@ export default {
     },
     addPlayer(player) {
       this.players.push(
-        {
-          id : player.id,
-          name : player.name,
-          role : player.role,
-          status : PlayerStatus.ALIVE
-        }
+        this.mixinPlayerObject(player, undefined)
       );
     },
     changeLifeStatus(id) {
@@ -84,9 +93,13 @@ export default {
       let newStatus = this.players[elementPos].status === PlayerStatus.ALIVE ? PlayerStatus.DEAD : PlayerStatus.ALIVE;
       this.$set(this.players[elementPos], 'status', newStatus);
     },
-    deletePlayer(id) {
-      let elementPos = this.findPlayerIndexById(id);
+    deletePlayer() {
+      let elementPos = this.findPlayerIndexById(this.playerToDelete);
       this.$delete(this.players, elementPos);
+    },
+    confirmPlayerDeletion(playerId) {
+      this.playerToDelete = playerId;
+      this.$refs.deletePlayerConfirmation.showDialog();
     },
     findPlayerIndexById(id) {
       return this.players.map((x)=>{return x.id; }).indexOf(id);
@@ -96,8 +109,38 @@ export default {
         this.$refs.clearSessionConfirmationDialog.showDialog();
       }
     },
+    showEditPlayerDialog(player) {
+      this.$refs.addPlayerDialog.openDialogForEditing(player);
+    },
+    updatePlayer(player) {
+      let elementPos = this.findPlayerIndexById(player.id);
+      let existingPlayer = this.players[elementPos];
+      this.$set(this.players, elementPos, this.mixinPlayerObject(player, existingPlayer));
+    },
+    mixinPlayerObject(player, existingPlayer) {
+      return {
+        id : player.id,
+        name : player.name,
+        role : player.role,
+        status : existingPlayer ? existingPlayer.status : PlayerStatus.ALIVE
+      };
+    },
     resetSession() {
       this.players = [];
+    },
+    closeDrawer() {
+      this.drawer = false;
+    },
+    showSaveSessionDialog() {
+      this.closeDrawer();
+      this.$refs.saveSessionDialog.showDialog();
+    },
+    showOpenSessionDialog() {
+      this.closeDrawer();
+      this.$refs.openSessionDialog.showDialog();
+    },
+    openSession(sessionPlayers) {
+      this.$set(this, 'players', sessionPlayers);
     }
   }
 }

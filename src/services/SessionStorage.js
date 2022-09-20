@@ -6,7 +6,7 @@ export default {
         this._saveToLocalStorage(sessionBlob);
     },
     getSessions() {
-        return this._readFromLocalStorage().sessions();
+        return this._readFromLocalStorage().sessions;
     },
     deleteSession(sessionId) {
         let sessionBlob = this._readFromLocalStorage();
@@ -14,17 +14,18 @@ export default {
             return session.id === sessionId;
         }),
          1);
+        this._saveToLocalStorage(sessionBlob);
     },
     _readFromLocalStorage() {
         if(!localStorage.getItem(this.sessionStorageKey)) {
-            localStorage.setItem(this.getSessionObject);
+            this._saveToLocalStorage(this.getNewSessionObject());
         }
-        return localStorage.getItem(this.sessionStorageKey);
+        return JSON.parse(localStorage.getItem(this.sessionStorageKey));
     },
     _saveToLocalStorage(sessionBlob) {
-        localStorage.setItem(this.sessionStorageKey, sessionBlob);
+        localStorage.setItem(this.sessionStorageKey, JSON.stringify(sessionBlob));
     },
-    getSessionObject() {
+    getNewSessionObject() {
         return this.getNewSessionObjectV1();
     },
     getNewSessionObjectV1() {
@@ -32,5 +33,5 @@ export default {
             version : "1",
             sessions : []
         };
-    }
+    },
 }

@@ -15,16 +15,10 @@
     </v-card>
     <v-card flat tile width="100%" class="grey darken-3 text-center">
       <v-card-text>
-        <v-btn icon large color="white" class="mx-6">
-          <v-icon> mdi-content-save </v-icon>
-        </v-btn>
-        <v-btn icon large color="white" class="mx-6">
-          <v-icon> mdi-folder-open </v-icon>
-        </v-btn>
-        <v-btn icon large color="white" class="mx-6" @click="emitClearSession">
+        <v-btn icon large color="white" class="mx-6" @click="$emit('clearSession')" title="clear session">
           <v-icon> mdi-close-circle </v-icon>
         </v-btn>
-        <v-btn icon large color="white" class="mx-6" @click="emitAddPlayer">
+        <v-btn icon large color="white" class="mx-6" @click="$emit('addPlayer')" title="add player">
           <v-icon> mdi-plus </v-icon>
         </v-btn>
       </v-card-text>
@@ -64,14 +58,6 @@ export default {
         alivePlayers: alivePlayers,
       };
     },
-  },
-  methods: {
-    emitAddPlayer() {
-      this.$emit("addPlayer");
-    },
-    emitClearSession() {
-        this.$emit("clearSession");
-    }
-  },
+  }
 };
 </script>

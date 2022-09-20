@@ -4,6 +4,7 @@
         <v-list-item v-for="player in players" :key="player.id">
             <player-row :player="player" 
             @changeLifeStatus="$emit('changeLifeStatus',$event)"
+            @editPlayer="$emit('editPlayer',$event)"
             @deletePlayer="$emit('deletePlayer',$event)"/>
         </v-list-item>
     </v-list>

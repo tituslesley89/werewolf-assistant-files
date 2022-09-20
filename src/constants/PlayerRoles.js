@@ -1,35 +1,35 @@
 import PlayerTeam from "./PlayerTeam"
 export default {
     werewolf : {
-        name : 'werewolf',
+        name : 'Werewolf',
         team : PlayerTeam.WEREWOLF
     },
     villager : {
-        name : 'villager',
+        name : 'Villager',
         team : PlayerTeam.VILLAGER
     },
     hunter : {
-        name : 'hunter',
+        name : 'Hunter',
         team : PlayerTeam.VILLAGER
     },
     seer : {
-        name : 'seer',
+        name : 'Seer',
         team : PlayerTeam.VILLAGER
     },
     tanner : {
-        name : 'tanner',
+        name : 'Tanner',
         team : PlayerTeam.OTHER
     },
     bodyguard : {
-        name : 'bodyguard',
+        name : 'Bodyguard',
         team : PlayerTeam.VILLAGER
     },
     lycan : {
-        name : 'lycan',
+        name : 'Lycan',
         team : PlayerTeam.VILLAGER
     },
     villageIdiot : {
-        name : 'village idiot',
+        name : 'Village Idiot',
         team : PlayerTeam.VILLAGER
     }
 }

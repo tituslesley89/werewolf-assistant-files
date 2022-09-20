@@ -16,6 +16,7 @@
 
         <v-list dense>
           <v-list-item @click="emitDelete">Delete</v-list-item>
+          <v-list-item @click="emitEdit">Edit</v-list-item>
         </v-list>
       </v-menu>
       <v-list-item-title
@@ -79,6 +80,9 @@ export default {
     },
     emitDelete() {
       this.$emit("deletePlayer", this.player.id);
+    },
+    emitEdit() {
+      this.$emit("editPlayer", this.player);
     },
   },
 };
