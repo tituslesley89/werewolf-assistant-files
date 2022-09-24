@@ -15,21 +15,27 @@
     </v-card>
     <v-card flat tile width="100%" class="grey darken-3 text-center">
       <v-card-text>
-        <v-btn icon large color="white" class="mx-6" @click="$emit('clearSession')" title="clear session">
+        <v-btn icon large color="white" class="mx-2" @click="$emit('clearSession')" title="clear session">
           <v-icon> mdi-close-circle </v-icon>
         </v-btn>
-        <v-btn icon large color="white" class="mx-6" @click="$emit('addPlayer')" title="add player">
+        <v-btn icon large color="white" class="mx-2" @click="$emit('addPlayer')" title="add player">
           <v-icon> mdi-plus </v-icon>
         </v-btn>
+        <night-action-widge :players="playerList"/>
       </v-card-text>
+      <div class="pb-10"/>
     </v-card>
   </v-footer>
 </template>
 <script>
 import PlayerTeam from "@/constants/PlayerTeam";
 import PlayerStatus from "@/constants/PlayerStatus";
+import NightActionWidge from '@/components/NightActionWidge.vue';
 export default {
   name: "FooterBox",
+  components : {
+    NightActionWidge
+  },
   props: {
     playerList: {
       type: Array,
