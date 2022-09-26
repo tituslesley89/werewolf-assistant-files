@@ -10,7 +10,7 @@
       <h3>Werewolf Assistant</h3>
 
       <v-spacer></v-spacer>
-      <RoundTimer ref="roundTimer" :isTimerRunning="isTimerRunning"/>
+      <MarkRoundTimer ref="markRoundTimer"/>
 
     </v-app-bar>
 
@@ -52,7 +52,7 @@
     <confirmation-dialog ref="deletePlayerConfirmation" dialogText="Are you sure you want to delete this player?" @confirm="deletePlayer"/>
     <save-session ref="saveSessionDialog" :players="players"/>
     <open-session ref="openSessionDialog" @openSession="openSession"/>
-    <footer-box :playerList="players" :isTimerRunning="isTimerRunning" @addPlayer="openPlayerDialog" @toggleTimer="toggleTimer" @resetTimer="resetTimer"/>
+    <footer-box :playerList="players" @addPlayer="openPlayerDialog" @markNightStart="markTimer"/>
     </v-main>
   </v-app>
 </template>
@@ -65,7 +65,7 @@ import FooterBox from './components/FooterBox.vue';
 import ConfirmationDialog from './components/ConfirmationDialog.vue';
 import SaveSession from './components/SaveSession.vue'
 import OpenSession from './components/OpenSession.vue';
-import RoundTimer from './components/RoundTimer.vue';
+import MarkRoundTimer from './components/MarkRoundTimer.vue';
 
 export default {
   name: 'App',
@@ -77,14 +77,13 @@ export default {
     ConfirmationDialog,
     OpenSession,
     SaveSession,
-    RoundTimer
+    MarkRoundTimer
 },
 
   data: () => ({
     drawer : false,
     players : [],
-    playerToDelete : undefined,
-    isTimerRunning : false
+    playerToDelete : undefined
   }),
   methods : {
     openPlayerDialog() {
@@ -156,11 +155,8 @@ export default {
     openSession(sessionPlayers) {
       this.$set(this, 'players', sessionPlayers);
     },
-    toggleTimer() {
-      this.isTimerRunning = !this.isTimerRunning;
-    },
-    resetTimer() {
-      this.$refs.roundTimer.resetTimer();
+    markTimer() {
+      this.$refs.markRoundTimer.resetTimer();
     }
   }
 }

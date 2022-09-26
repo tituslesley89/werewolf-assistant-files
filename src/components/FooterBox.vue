@@ -18,16 +18,8 @@
         <v-btn icon large color="white" class="mx-2" @click="$emit('addPlayer')" title="add player">
           <v-icon> mdi-plus </v-icon>
         </v-btn>
-        <v-btn icon large color="white" class="mx-2" @click="$emit('toggleTimer')" title="play/pause timer">
-          <v-icon v-if="isTimerRunning">
-            mdi-timer-pause-outline
-          </v-icon>
-          <v-icon v-else>
-            mdi-timer-play-outline
-          </v-icon>
-        </v-btn>
-        <v-btn icon large color="white" class="mx-2" @click="$emit('resetTimer')" title="reset timer">
-          <v-icon>mdi-timer-refresh-outline</v-icon>
+        <v-btn icon large color="white" class="mx-2" @click="$emit('markNightStart')" title="mark night start">
+          <v-icon> mdi-timer-marker-outline </v-icon>
         </v-btn>
         <night-action-widge :players="playerList"/>
       </v-card-text>
@@ -50,12 +42,6 @@ export default {
       default() {
         return [];
       },
-    },
-    isTimerRunning: {
-      type: Boolean,
-      default() {
-        return false;
-      }
     }
   },
   computed: {
