@@ -10,7 +10,7 @@
       <h3>Werewolf Assistant</h3>
 
       <v-spacer></v-spacer>
-
+      <RoundTimer ref="roundTimer" :isTimerRunning="isTimerRunning"/>
 
     </v-app-bar>
 
@@ -34,12 +34,15 @@
         <v-list-item @click="showSaveSessionDialog">
             <v-list-item-title>Save Session</v-list-item-title>
           </v-list-item>
+        <v-list-item @click="showClearSessionConfirmationDialog">
+            <v-list-item-title>Clear Session</v-list-item-title>
+          </v-list-item>
         </v-list-item-group>
     </v-list>
     </v-navigation-drawer>
 
     <v-main>
-      <player-list :players="players" 
+      <player-list style="margin-bottom:170px" :players="players" 
       @changeLifeStatus="changeLifeStatus"
       @editPlayer="showEditPlayerDialog"
       @deletePlayer="confirmPlayerDeletion"/>
@@ -48,7 +51,7 @@
     <confirmation-dialog ref="deletePlayerConfirmation" dialogText="Are you sure you want to delete this player?" @confirm="deletePlayer"/>
     <save-session ref="saveSessionDialog" :players="players"/>
     <open-session ref="openSessionDialog" @openSession="openSession"/>
-    <footer-box :playerList="players" @addPlayer="openPlayerDialog" @clearSession="showClearSessionConfirmationDialog"/>
+    <footer-box :playerList="players" :isTimerRunning="isTimerRunning" @addPlayer="openPlayerDialog" @toggleTimer="toggleTimer" @resetTimer="resetTimer"/>
     </v-main>
   </v-app>
 </template>
@@ -61,6 +64,7 @@ import FooterBox from './components/FooterBox.vue';
 import ConfirmationDialog from './components/ConfirmationDialog.vue';
 import SaveSession from './components/SaveSession.vue'
 import OpenSession from './components/OpenSession.vue';
+import RoundTimer from './components/RoundTimer.vue';
 
 export default {
   name: 'App',
@@ -71,13 +75,15 @@ export default {
     FooterBox,
     ConfirmationDialog,
     OpenSession,
-    SaveSession
-  },
+    SaveSession,
+    RoundTimer
+},
 
   data: () => ({
     drawer : false,
     players : [],
-    playerToDelete : undefined
+    playerToDelete : undefined,
+    isTimerRunning : false
   }),
   methods : {
     openPlayerDialog() {
@@ -141,6 +147,12 @@ export default {
     },
     openSession(sessionPlayers) {
       this.$set(this, 'players', sessionPlayers);
+    },
+    toggleTimer() {
+      this.isTimerRunning = !this.isTimerRunning;
+    },
+    resetTimer() {
+      this.$refs.roundTimer.resetTimer();
     }
   }
 }
