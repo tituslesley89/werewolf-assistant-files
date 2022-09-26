@@ -5,6 +5,7 @@
             <player-row :player="player" 
             @changeLifeStatus="$emit('changeLifeStatus',$event)"
             @editPlayer="$emit('editPlayer',$event)"
+            @setNote="$emit('setNote', $event)"
             @deletePlayer="$emit('deletePlayer',$event)"/>
         </v-list-item>
     </v-list>

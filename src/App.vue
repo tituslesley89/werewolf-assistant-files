@@ -45,6 +45,7 @@
       <player-list style="margin-bottom:170px" :players="players" 
       @changeLifeStatus="changeLifeStatus"
       @editPlayer="showEditPlayerDialog"
+      @setNote="updatePlayerNote"
       @deletePlayer="confirmPlayerDeletion"/>
     <add-player-dialog ref="addPlayerDialog" @add-player="addPlayer" @update-player="updatePlayer"/>
     <confirmation-dialog ref="clearSessionConfirmationDialog" dialogText="Are you sure you want to reset the session?" @confirm="resetSession"/>
@@ -123,12 +124,19 @@ export default {
       let existingPlayer = this.players[elementPos];
       this.$set(this.players, elementPos, this.mixinPlayerObject(player, existingPlayer));
     },
+    updatePlayerNote(playerNote) {
+      let elementPos = this.findPlayerIndexById(playerNote.playerId);
+      let existingPlayer = this.players[elementPos];
+      existingPlayer.note = playerNote.note;
+      this.$set(this.players, elementPos, existingPlayer);
+    },
     mixinPlayerObject(player, existingPlayer) {
       return {
         id : player.id,
         name : player.name,
         role : player.role,
-        status : existingPlayer ? existingPlayer.status : PlayerStatus.ALIVE
+        status : existingPlayer ? existingPlayer.status : PlayerStatus.ALIVE,
+        note : existingPlayer ? existingPlayer.note : ''
       };
     },
     resetSession() {

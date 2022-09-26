@@ -33,57 +33,80 @@
           {{ player.role.name }}
         </div>
       </v-list-item-title>
+      <span class="pr-4">
+      <v-btn v-if="player.note === ''" small dense
+        @click="showNoteDialog">
+        Add Note
+      </v-btn>
+      <span v-else @click="showNoteDialog" class="text--disabled font-weight-light font-italic">
+        {{ player.note }}
+      </span>
+      </span>
       <v-btn
         :color="getStatusColor(player.status)"
         class="float-right mr-4"
+        small
+        dense
         @click="emitChangeLifeStatus"
       >
         {{ player.status === PlayerStatus.ALIVE ? "Kill" : "Revive" }}
       </v-btn>
     </div>
+    <AddNoteDialog ref="addNoteDialog" @setNote="emitSetNote" />
   </v-list-item-content>
 </template>
 <script>
 import PlayerTeam from "../constants/PlayerTeam";
 import PlayerStatus from "../constants/PlayerStatus";
+import AddNoteDialog from "./AddNoteDialog.vue";
 export default {
-  name: "PlayerRow",
-  data() {
-    return {
-      PlayerStatus: PlayerStatus,
-    };
-  },
-  props: {
-    player: {
-      type: Object,
+    name: "PlayerRow",
+    components: { AddNoteDialog },
+    data() {
+        return {
+            PlayerStatus: PlayerStatus,
+        };
     },
-  },
-  methods: {
-    getRoleColor(status, team) {
-      if (status === PlayerStatus.DEAD) {
-        return "grey--text";
-      }
-      switch (team) {
-        case PlayerTeam.VILLAGER:
-          return "green--text";
-        case PlayerTeam.WEREWOLF:
-          return "red--text";
-        default:
-          return "brown--text";
-      }
+    props: {
+        player: {
+            type: Object,
+        },
     },
-    getStatusColor(status) {
-      return status === PlayerStatus.ALIVE ? "deep-orange" : "grey";
-    },
-    emitChangeLifeStatus() {
-      this.$emit("changeLifeStatus", this.player.id);
-    },
-    emitDelete() {
-      this.$emit("deletePlayer", this.player.id);
-    },
-    emitEdit() {
-      this.$emit("editPlayer", this.player);
-    },
-  },
+    methods: {
+        getRoleColor(status, team) {
+            if (status === PlayerStatus.DEAD) {
+                return "grey--text";
+            }
+            switch (team) {
+                case PlayerTeam.VILLAGER:
+                    return "green--text";
+                case PlayerTeam.WEREWOLF:
+                    return "red--text";
+                default:
+                    return "brown--text";
+            }
+        },
+        getStatusColor(status) {
+            return status === PlayerStatus.ALIVE ? "deep-orange" : "grey";
+        },
+        emitChangeLifeStatus() {
+            this.$emit("changeLifeStatus", this.player.id);
+        },
+        emitDelete() {
+            this.$emit("deletePlayer", this.player.id);
+        },
+        emitEdit() {
+            this.$emit("editPlayer", this.player);
+        },
+        emitSetNote(note) {
+            this.$emit('setNote', {
+              playerId : this.player.id,
+              note : note
+            });
+        },
+        showNoteDialog() {
+          this.$refs.addNoteDialog.showDialog(this.player.note);
+        }
+    }
 };
 </script>
