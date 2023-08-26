@@ -34,5 +34,37 @@ export default {
     villageIdiot: {
         name: 'Village Idiot',
         team: PlayerTeam.VILLAGER
+    },
+    huntress: {
+        name: 'Huntress',
+        team: PlayerTeam.VILLAGER,
+        nightActionOrder: 5
+    },
+    beholder: {
+        name: 'Beholder',
+        team: PlayerTeam.VILLAGER
+    },
+    priest: {
+        name : 'Priest',
+        team: PlayerTeam.VILLAGER,
+        nightActionOrder: 9
+    },
+    countDracula: {
+        name: 'Count Dracula',
+        team: PlayerTeam.OTHER,
+        nightActionOrder: 10
+    },
+    apprenticeExposer: {
+        name: 'Apprentice Exposer',
+        team: PlayerTeam.VILLAGER,
+        nightActionOrder: 10
+    },
+    illuminati: {
+        name: 'Illuminati',
+        team: PlayerTeam.OTHER
+    },
+    qupid : {
+        name: 'Qupid',
+        team: PlayerTeam.VILLAGER
     }
 }
